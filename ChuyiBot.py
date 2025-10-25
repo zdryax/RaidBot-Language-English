@@ -180,4 +180,5 @@ async def bn(ctx):
 async def on_ready():
     print(f'Bot conectado como {bot.user}')
 
-bot.run(os.environ["TOKEN"])
+
+bot.run("TU TOKEN AQUI")
