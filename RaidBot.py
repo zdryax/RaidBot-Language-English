@@ -263,7 +263,7 @@ async def hlp(ctx):
 
     embed.add_field(
         name="Canal",
-        value="`$clearall` – Deletes all messages from a single channel.\n`$resetcanal` – Resets a channel by deleting all messages sent in it but preserving the channel name and role settings..",
+        value="`$clearall` – Deletes all messages from a single channel.\n`$resetcanal` – Resets a channel by deleting all messages sent in it but preserving the channel name and role settings.\n`$resetserver` – Resets ***ALL channels*** on the server, deleting ***all messages*** sent to it but preserving the role configuration and channel name.",
         inline=False
     )
 
@@ -287,5 +287,6 @@ async def on_ready():
     print(f'Bot connected as {bot.user}')
 
 bot.run("TU TOKEN AQUI")
+
 
 
