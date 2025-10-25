@@ -75,7 +75,7 @@ async def nuke(ctx):
                 print(f"Error while deleting {canal.name}: {e}")
         await ctx.send("Done, all channels have been deleted.")
     except asyncio.TimeoutError:
-        await ctx.send("Tiempo agotado. No se borró nada.")
+        await ctx.send("Timed out. Nothing deleted.")
 
 @bot.command()
 @commands.has_permissions(administrator=True)
@@ -287,6 +287,7 @@ async def on_ready():
     print(f'Bot connected as {bot.user}')
 
 bot.run("TU TOKEN AQUI")
+
 
 
 
