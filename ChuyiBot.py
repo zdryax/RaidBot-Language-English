@@ -12,7 +12,7 @@ bot = commands.Bot(command_prefix='$', intents=intents)
 @commands.has_permissions(administrator=True)
 async def spam(ctx, cantidad: int, *, mensaje: str):
     if cantidad > 1000:
-        await ctx.send("Hay un máximo de `1,000` mensajes por canal para evitar bloqueos.")
+        await ctx.send("There is a maximum of `1,000` messages per channel to avoid blocking.")
         return
 
     tareas = []
@@ -24,20 +24,20 @@ async def spam(ctx, cantidad: int, *, mensaje: str):
                     await canal.send(mensaje)
                     await asyncio.sleep(0)
                 except discord.Forbidden:
-                    print(f"No tengo permisos para enviar en {canal.name}")
+                    print(f"I don't have permission to send on {canal.name}")
                 except Exception as e:
-                    print(f"Error en {canal.name}: {e}")
+                    print(f"Error {canal.name}: {e}")
 
         tareas.append(asyncio.create_task(enviar_en_canal(canal)))
 
     await asyncio.gather(*tareas)
-    await ctx.send(f"Listo, mensaje enviado `{cantidad}` veces en todos los canales de texto.")
+    await ctx.send(f"Done, message sent `{cantidad}` times in all text channels.")
 
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def raid(ctx, cantidad: int, *, nombre_base: str):
     if cantidad > 500:
-        await ctx.send("Hay un máximo de `500` canales por comando para evitar bloqueos.")
+        await ctx.send("There is a maximum of `500` channels per command to avoid blocking.")
         return
 
     creados = 0
@@ -47,19 +47,19 @@ async def raid(ctx, cantidad: int, *, nombre_base: str):
             await ctx.guild.create_text_channel(name=nombre)
             creados += 1
         except discord.Forbidden:
-            await ctx.send(f"No tengo permisos para crear canales.")
+            await ctx.send(f"I don't have permission to create channels.")
             return
         except Exception as e:
-            await ctx.send(f"Error al crear `{nombre}`: {e}")
+            await ctx.send(f"Error creating `{nombre}`: {e}")
 
-    await ctx.send(f"Listo, se han creado `{creados}` canales con el nombre {nombre_base}.")
+    await ctx.send(f"Ready, they have been created `{creados}` channels with name {nombre_base}.")
 
 
 
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def nuke(ctx):
-    await ctx.send("Confirma que quieres borrar **TODOS LOS CANALES** del servidor escribiendo `y` en el chat.")
+    await ctx.send("Confirm that you want to delete **ALL CHANNELS** from the server by typing `y` in the chat.")
 
     def check(m):
         return m.author == ctx.author and m.content == "y"
@@ -70,10 +70,10 @@ async def nuke(ctx):
             try:
                 await canal.delete()
             except discord.Forbidden:
-                print(f"No tengo permisos para borrar {canal.name}")
+                print(f"I don't have permission to delete {canal.name}")
             except Exception as e:
-                print(f"Error al borrar {canal.name}: {e}")
-        await ctx.send("Listo, todos los canales han sido borrados.")
+                print(f"Error while deleting {canal.name}: {e}")
+        await ctx.send("Done, all channels have been deleted.")
     except asyncio.TimeoutError:
         await ctx.send("Tiempo agotado. No se borró nada.")
 
@@ -82,34 +82,34 @@ async def nuke(ctx):
 async def cn(ctx, *, nuevo_nombre: str):
     try:
         await ctx.guild.edit(name=nuevo_nombre)
-        await ctx.send(f"El nombre del servidor ha sido cambiado a: `{nuevo_nombre}`")
+        await ctx.send(f"The server name has been changed to: `{nuevo_nombre}`")
     except discord.Forbidden:
-        await ctx.send("No tengo permisos para cambiar el nombre del servidor.")
+        await ctx.send("I don't have permission to change the server name.")
     except Exception as e:
-        await ctx.send(f"Error al cambiar el nombre: {e}")
+        await ctx.send(f"Error changing name: {e}")
 
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def ci(ctx):
     if not ctx.message.attachments:
-        await ctx.send("Debes adjuntar una imagen para usar como nuevo icono.")
+        await ctx.send("You must attach an image to use as a new icon.")
         return
 
     imagen = ctx.message.attachments[0]
     try:
         imagen_bytes = await imagen.read()
         await ctx.guild.edit(icon=imagen_bytes)
-        await ctx.send("Icono del servidor cambiado correctamente.")
+        await ctx.send("Server icon changed successfully.")
     except discord.Forbidden:
-        await ctx.send("No tengo permisos para cambiar el icono del servidor.")
+        await ctx.send("I don't have permission to change the server icon..")
     except Exception as e:
-        await ctx.send(f"Error al cambiar el icono: {e}")
+        await ctx.send(f"Error changing icon: {e}")
         
 @bot.command()
 @commands.has_permissions(manage_roles=True)
 async def cr(ctx, cantidad: int, *, nombre_base: str):
     if cantidad > 100:
-        await ctx.send("Hay un máximo de `100` roles por comando para evitar bloqueos.")
+        await ctx.send("There is a maximum of `100` roles per command to avoid deadlocks.")
         return
 
     creados = 0
@@ -120,28 +120,28 @@ async def cr(ctx, cantidad: int, *, nombre_base: str):
             creados += 1
             await asyncio.sleep(0.5)
         except discord.Forbidden:
-            await ctx.send(f"No tengo permisos para crear el rol `{nombre}`.")
+            await ctx.send(f"I don't have permissions to create the role `{nombre}`.")
         except Exception as e:
-            await ctx.send(f"Error al crear `{nombre}`: {e}")
+            await ctx.send(f"Error creating `{nombre}`: {e}")
 
-    await ctx.send(f"Listo, se han creado `{creados}` roles con nombre base `{nombre_base}`.")
+    await ctx.send(f"Ready, they have been created `{creados}` base named roles `{nombre_base}`.")
 
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def ping(ctx):
     try:
         latencia = round(bot.latency * 1000)
-        await ctx.send(f"🏓 Pong! Ping del bot: `{latencia}ms`")
+        await ctx.send(f"🏓 Pong! bot: `{latencia}ms`")
     except discord.Forbidden:
-        await ctx.send("No tengo permisos para enviar mensajes aquí.")
+        await ctx.send("I don't have permission to send messages here..")
     except Exception as e:
-        await ctx.send(f"Error al ejecutar el comando: {e}")
+        await ctx.send(f"Error executing command: {e}")
 
 @bot.command()
 @commands.has_permissions(manage_channels=True)
 async def ret(ctx, cantidad: int, nombre_base: str, *, mensaje: str):
     if cantidad > 500:
-        await ctx.send("Hay un máximo de `500` canales por comando para evitar bloqueos.")
+        await ctx.send("There is a maximum of `500` channels per command to avoid blocking.")
         return
 
     creados = 0
@@ -153,14 +153,9 @@ async def ret(ctx, cantidad: int, nombre_base: str, *, mensaje: str):
             creados += 1
             await asyncio.sleep(0)
         except Exception as e:
-            await ctx.send(f"Error en `{nombre}`: {e}")
+            await ctx.send(f"Error `{nombre}`: {e}")
 
-    await ctx.send(f"Listo, se han creado `{creados}` canales y enviado el mensaje en cada uno.")
-
-intents = discord.Intents.default()
-intents.members = True
-intents.guilds = True
-intents.message_content = True
+    await ctx.send(f"Ready, they have been created `{creados}` channels and sent the message in each one.")
 
 @bot.command()
 @commands.has_permissions(ban_members=True)
@@ -180,25 +175,57 @@ async def bn(ctx):
             baneados += 1
             await asyncio.sleep(1)
         except discord.Forbidden:
-            await ctx.send(f"No tengo permisos para banear a `{usuario}`.")
+            await ctx.send(f"I don't have permission to ban `{usuario}`.")
         except Exception as e:
-            await ctx.send(f"Error al banear `{usuario}`: {e}")
+            await ctx.send(f"Error when banning `{usuario}`: {e}")
 
-    await ctx.send(f"Listo, se han baneado `{baneados}` Personas.")
+    await ctx.send(f"Done, they have been banned `{baneados}` People.")
+
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def resetserer(ctx):
+    await ctx.send(
+        "This command will delete **ALL CHANNELS** from the server and recreate them empty.\n"
+        "Type `y` to continue."
+    )
+
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() == "y"
+
+    try:
+        await bot.wait_for("message", check=check, timeout=20)
+    except asyncio.TimeoutError:
+        await ctx.send("Timed out. Cancelled.")
+        return
+
+    await ctx.send("Resetting all channels...")
+
+    canales_originales = list(ctx.guild.channels)
+
+    for canal in canales_originales:
+        try:
+            nuevo = await canal.clone()
+            await canal.delete()
+            await nuevo.edit(name=canal.name, category=canal.category, position=canal.position)
+            await asyncio.sleep(1.5)
+        except Exception as e:
+            await ctx.send(f"Error when restarting channel `{canal.name}`: {e}")
+
+    await ctx.send("All channels have been restarted.")
 
 @bot.command()
 @commands.has_permissions(administrator=True)
 async def clear(ctx):
     try:
-        await ctx.send("Borrando todos los mensajes del canal...")
+        await ctx.send("Deleting all messages from the channel...")
         await ctx.channel.purge(limit=None)
-        confirmacion = await ctx.send("Todos los mensajes han sido borrados.")
+        confirmacion = await ctx.send("All messages have been deleted.")
         await asyncio.sleep(5)
         await confirmacion.delete()
     except discord.Forbidden:
-        await ctx.send("No tengo permisos para borrar mensajes.")
+        await ctx.send("I don't have permission to delete messages..")
     except Exception as e:
-        await ctx.send(f"Error al borrar mensajes: {e}")
+        await ctx.send(f"Error deleting messages: {e}")
 
 @bot.command()
 @commands.has_permissions(manage_channels=True)
@@ -207,7 +234,7 @@ async def resetcanal(ctx):
     nombre = canal.name
     categoria = canal.category
 
-    await ctx.send(f"Este comando eliminará el canal `{nombre}` y lo recreará vacío.\nEscribe `y` para continuar.")
+    await ctx.send(f"This command will delete the channel `{nombre}` and will recreate it empty.\nType `y` to continue.")
 
     def check(m):
         return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() == "y"
@@ -215,49 +242,50 @@ async def resetcanal(ctx):
     try:
         await bot.wait_for("message", check=check, timeout=15)
     except asyncio.TimeoutError:
-        await ctx.send("Tiempo agotado. Cancelado.")
+        await ctx.send("Timed out. Cancelled..")
         return
 
     try:
         nuevo = await canal.clone()
         await canal.delete()
         await nuevo.edit(name=nombre, category=categoria)
-        await nuevo.send(f"Canal `{nombre}` ha sido reiniciado.")
+        await nuevo.send(f"Channel `{nombre}` has been restarted.")
     except Exception as e:
         await ctx.send(f"Error: {e}")
 
 @bot.command(name="hlp")
 async def hlp(ctx):
     embed = discord.Embed(
-        title="Comandos de Chuyibot",
-        description="Aquí están los comandos disponibles:",
+        title="Commands",
+        description="Here are the available commands:",
         color=discord.Color.blue()
     )
 
     embed.add_field(
         name="Canal",
-        value="`$clearall` – Borra todos los mensajes de un solo canal\n`$resetcanal` – resetea un canal borrando todos los mensajes enviados en el pero conservando la configuración de roles y el nombre de el canal.",
+        value="`$clearall` – Deletes all messages from a single channel.\n`$resetcanal` – Resets a channel by deleting all messages sent in it but preserving the channel name and role settings..",
         inline=False
     )
 
     embed.add_field(
         name="ℹ️ Raid Info",
-        value="`$spam <cantidad> <mensaje>` – Hace spam en todos los canales.\n`$raid <Cantidad de canales a crear> <Nombre de los canales>` – Crea una cantidad personalizada de canales.\n`$nuke` – Borra todos los canales del servidor.\n`$cn <Nuevo nombre del servidor>` – Crea un nuevo nombre al servidor.\n`$cr <cantidad> <nombre de los roles>` – Crea una cantidad de roles en el servidor.\n`$ci <Adjunta una imagen>` – Crea una nueva foto para el servidor.\n`$ret <Cantidad> <Nombre de canales a crear> <Mensaje de Spam>` – Raidea el servidor creando una cantidad absurda de canales con un nombre y mensaje de spam personalizado.\n`$bn` – Banea a todos los miembros del servidor excepto a los bots con administrador.",
+        value="`$spam <amount> <message>` – Spams all channels.\n`$raid <Amount of channels to create> <Channel names>` – Creates a custom amount of channels.\n`$nuke` – Deletes all channels on the server.\n`$cn <New server name>` – Creates a new name for the server.\n`$cr <amount> <role names>` – Creates a number of roles on the server.\n`$ci <Attach an image>` – Creates a new photo for the server.\n`$ret <Amount> <Channel names to create> <Spam message>` – Raids the server by creating an absurd amount of channels with a custom spam name and message.\n`$bn` – Bans all members of the server except bots with admin.",
         inline=False
     )
 
     embed.add_field(
-        name="ℹ️ Ayuda",
-        value="`$hlp` – Muestra este panel de ayuda de comandos\n`$ping` – Mostrar la latencia del bot\n - ***Recuerda que el bot debe ser activado por su creador***.",
+        name="ℹ️ Help",
+        value="`$hlp` – Show this command help panel\n`$ping` – Show the bot latency\n - ***Remember that the bot must be activated by its creator***.",
         inline=False
     )
 
-    embed.set_footer(text="Bot de Raid • ChuyiBot")
+    embed.set_footer(text="Bot raid")
     await ctx.send(embed=embed)
 
 @bot.event
 async def on_ready():
-    print(f'Bot conectado como {bot.user}')
+    print(f'Bot connected as {bot.user}')
 
 bot.run("TU TOKEN AQUI")
+
 
