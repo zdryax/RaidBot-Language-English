@@ -2,15 +2,15 @@ import subprocess
 import os
 
 try:
-    print("Instalando dependencias...")
+    print("Installing dependencies...")
     subprocess.check_call(["pip", "install", "-r", "requirements.txt"])
-    print("Paquetes instalados correctamente.")
+    print("Packages installed successfully.")
 except subprocess.CalledProcessError as e:
-    print(f"Error al instalar paquetes: {e}")
+    print(f"Error installing packages: {e}")
     exit()
 
 try:
-    print("Iniciando ChuyiBot...")
-    os.system("python ChuyiBot.py")
+    print("Getting started RaidBot...")
+    os.system("python RaidBot.py")
 except Exception as e:
-    print(f"Error al ejecutar el bot: {e}")
+    print(f"Error executing the bot: {e}")
